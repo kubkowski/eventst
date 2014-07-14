@@ -69,6 +69,12 @@ class EventsController < ApplicationController
       @event = Event.friendly.find(params[:id])
     end
 
+    def all_tags(names)
+      self.tags = names.split(",").map do |t|
+        Tag.where(name = t.strip).first_or_create!
+      end
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def event_params
       params.require(:event).permit(:title, :start_date, :end_date, :location, :agenda, :address, :organizer_id)
@@ -77,7 +83,7 @@ class EventsController < ApplicationController
     def event_owner!
       authenticate_user!
 
-      if current_user.id != event.organizer_id
+      if current_user.id != @event.organizer_id
         redirect_to events_path
         flash[:notice] = 'You do not have enough permissions to do this'
       end
