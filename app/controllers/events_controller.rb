@@ -6,7 +6,11 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    if params[:tag]
+      @events = Event.tagged_with(params[:tag])
+    else
+      @events = Event.all
+    end
   end
 
   # GET /events/1
@@ -68,16 +72,10 @@ class EventsController < ApplicationController
     def set_event
       @event = Event.friendly.find(params[:id])
     end
-
-    def all_tags(names)
-      self.tags = names.split(",").map do |t|
-        Tag.where(name = t.strip).first_or_create!
-      end
-    end
-
+    
     # Never trust parameters from the scary internet, only allow the white list through.
     def event_params
-      params.require(:event).permit(:title, :start_date, :end_date, :location, :agenda, :address, :organizer_id)
+      params.require(:event).permit(:title, :start_date, :end_date, :location, :agenda, :address, :organizer_id, :all_tags)
     end
 
     def event_owner!
