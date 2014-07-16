@@ -3,6 +3,8 @@ Eventst::Application.routes.draw do
   resources :events
   get 'tags/:tag', to: 'events#index', as: :tag
 
+  root 'events#index'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
